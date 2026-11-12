@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eaf3f3" />
+    <meta name="description" content="Condições atuais e previsão meteorológica para a sua cidade." />
+    <title>Clima em foco · seu painel meteorológico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="site-frame">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Clima em foco, início">
+          <span class="brand-icon">☼</span><span>Clima<span class="brand-light"> em foco</span></span>
+        </a>
+        <div class="topbar-actions">
+          <div class="api-status"><i></i><span id="api-status">Conectando à API</span></div>
+          <form id="search-form" class="search-form">
+            <label class="sr-only" for="city-input">Qual cidade você quer consultar?</label>
+            <span class="search-icon">⌕</span>
+            <input id="city-input" name="cidade" placeholder="Buscar cidade..." minlength="2" maxlength="100" required />
+            <button id="search-button" type="submit" aria-label="Buscar cidade">Buscar <span>⌕</span></button>
+          </form>
+          <button class="menu-button" type="button" aria-label="Abrir menu">☰</button>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="intro-row">
+          <div><p class="eyebrow">SEU TEMPO, EM UM SÓ LUGAR</p><h1>Um olhar leve sobre o clima.</h1></div>
+          <p>Consulte as condições de agora e veja o que os próximos dias reservam.</p>
+        </section>
+
+        <div id="location-picker" class="location-picker" hidden>
+          <div class="location-picker-copy"><span class="location-pin">⌖</span><div><p id="location-count" class="location-count"></p><label for="location-select">Qual destas localidades você procura?</label></div></div>
+          <div class="location-choice"><select id="location-select"></select><button id="weather-button" type="button">Ver clima <span>→</span></button></div>
+        </div>
+        <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <section id="weather-section" class="weather-section" hidden>
+          <section class="dashboard-card">
+            <div class="dashboard-heading">
+              <div class="city-heading"><p class="eyebrow">CONDIÇÕES AGORA</p><h2 id="weather-title">Sua cidade</h2><p id="coordinates" class="weather-meta"></p><p id="observed-at" class="weather-meta"></p></div>
+              <button id="refresh-weather" type="button" class="refresh-button"><span>↻</span> Atualizar dados</button>
+            </div>
+
+            <div id="weather-visual" class="weather-visual" data-weather="sunny">
+              <div class="visual-shade"></div>
+              <div class="visual-overline"><span class="live-dot"></span> TEMPO EM TEMPO REAL</div>
+              <div class="visual-bottom">
+                <div class="visual-condition"><span id="current-icon" class="current-icon">☀</span><div><span id="current-condition">Céu limpo</span><small id="condition-code">WMO 0</small></div></div>
+                <div class="visual-temperature"><strong id="current-temp">--°</strong><span>temperatura atual</span></div>
+                <div class="visual-clock"><span>⏱</span><span id="local-time">Horário local</span><small id="sunset-label">Pôr do sol —</small></div>
+              </div>
+              <a id="photo-credit" class="photo-credit" href="https://unsplash.com" target="_blank" rel="noreferrer">Foto: Unsplash</a>
+            </div>
+
+            <div class="metrics-grid">
+              <article class="metric"><span class="metric-icon mint">◌</span><span class="metric-label">Umidade</span><strong id="humidity">—</strong><small>umidade relativa do ar</small></article>
+              <article class="metric"><span class="metric-icon sky">↗</span><span class="metric-label">Vento</span><strong id="wind">—</strong><small>velocidade e direção</small></article>
+              <article class="metric"><span class="metric-icon coral">♨</span><span class="metric-label">Sensação térmica</span><strong id="feels-like">—</strong><small>como você sente o clima</small></article>
+              <article class="metric"><span class="metric-icon blue">☂</span><span class="metric-label">Precipitação</span><strong id="precipitation">—</strong><small>chuva acumulada agora</small></article>
+              <article class="metric"><span class="metric-icon gold">☼</span><span class="metric-label">Índice UV</span><strong id="uv-index">—</strong><small>radiação ultravioleta</small></article>
+              <article class="metric"><span class="metric-icon lilac">◷</span><span class="metric-label">Pôr do sol</span><strong id="sunset-time">—</strong><small>horário local</small></article>
+            </div>
+          </section>
+
+          <section class="forecast-card panel-card">
+            <div class="section-heading"><div><p class="eyebrow">PLANEJE A SEMANA</p><h2>Previsão dos próximos dias</h2></div><span class="forecast-badge">5 dias</span></div>
+            <div id="forecast-grid" class="forecast-grid"></div>
+          </section>
+        </section>
+
+        <section class="lower-grid">
+          <section class="panel-card history-panel">
+            <div class="section-heading"><div><p class="eyebrow">PESQUISAS RECENTES</p><h2>Suas cidades</h2></div><span id="history-count" class="count-badge">0 / 5</span></div>
+            <div id="history-list" class="history-list"><div class="empty-state"><span>⌕</span><p>As cidades consultadas vão aparecer aqui.</p></div></div>
+          </section>
+          <section class="panel-card compare-panel">
+            <div class="section-heading"><div><p class="eyebrow">CLIMA LADO A LADO</p><h2>Compare cidades</h2></div><span class="compare-symbol">⇄</span></div>
+            <p class="panel-description">Escolha duas cidades do seu histórico para comparar mínimas e máximas.</p>
+            <form id="compare-form" class="compare-form">
+              <label>Primeira cidade<select id="city-one" required disabled><option value="">Consulte uma cidade primeiro</option></select></label>
+              <label>Segunda cidade<select id="city-two" required disabled><option value="">Consulte uma cidade primeiro</option></select></label>
+              <button id="compare-button" type="submit" disabled>Comparar previsões <span>→</span></button>
+            </form>
+            <div id="compare-result" class="compare-result" hidden></div>
+          </section>
+        </section>
+      </main>
+
+      <footer><a class="footer-brand" href="#top">Clima <span>em foco</span></a><span>Um bom dia começa com uma boa previsão.</span><span>Dados meteorológicos: Open-Meteo</span></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
